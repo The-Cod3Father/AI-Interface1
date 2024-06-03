@@ -5,16 +5,23 @@ canvas.height = window.innerHeight;
 
 let stars = [];
 let lines = [];
+let clusters = [];
 
 function createStars() {
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 150; i++) {
         stars.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
             radius: Math.random() * 2,
-            alpha: Math.random()
+            alpha: Math.random(),
+            color: getRandomColor()
         });
     }
+}
+
+function getRandomColor() {
+    const colors = ['#ff6f61', '#6b5b95', '#88b04b', '#f7cac9', '#92a8d1', '#955251', '#b565a7', '#009b77'];
+    return colors[Math.floor(Math.random() * colors.length)];
 }
 
 function drawStars() {
@@ -22,9 +29,17 @@ function drawStars() {
     for (let star of stars) {
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.radius, 0, 2 * Math.PI);
-        ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+        ctx.fillStyle = `rgba(${hexToRgb(star.color)}, ${star.alpha})`;
         ctx.fill();
     }
+}
+
+function hexToRgb(hex) {
+    const bigint = parseInt(hex.slice(1), 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    return `${r}, ${g}, ${b}`;
 }
 
 function createLines() {
@@ -54,12 +69,46 @@ function drawLines() {
     }
 }
 
+function createClusters() {
+    for (let i = 0; i < 10; i++) {
+        clusters.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            radius: 30 + Math.random() * 20,
+            color: getRandomColor(),
+            alpha: 0.5
+        });
+    }
+}
+
+function drawClusters() {
+    for (let cluster of clusters) {
+        ctx.beginPath();
+        ctx.arc(cluster.x, cluster.y, cluster.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = `rgba(${hexToRgb(cluster.color)}, ${cluster.alpha})`;
+        ctx.fill();
+    }
+}
+
 function animate() {
     drawStars();
     drawLines();
+    drawClusters();
     requestAnimationFrame(animate);
 }
 
 createStars();
 createLines();
+createClusters();
 animate();
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    stars = [];
+    lines = [];
+    clusters = [];
+    createStars();
+    createLines();
+    createClusters();
+});
