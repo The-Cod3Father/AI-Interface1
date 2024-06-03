@@ -3,19 +3,34 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let stars = [];
-let lines = [];
-let clusters = [];
+let particles = [];
 
-function createStars() {
-    for (let i = 0; i < 150; i++) {
-        stars.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            radius: Math.random() * 2,
-            alpha: Math.random(),
-            color: getRandomColor()
-        });
+class Particle {
+    constructor(x, y, radius, color, velocity) {
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+        this.color = color;
+        this.velocity = velocity;
+        this.alpha = 1;
+    }
+
+    draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.closePath();
+        ctx.restore();
+    }
+
+    update() {
+        this.draw();
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+        this.alpha -= 0.01;
     }
 }
 
@@ -24,94 +39,38 @@ function getRandomColor() {
     return colors[Math.floor(Math.random() * colors.length)];
 }
 
-function drawStars() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let star of stars) {
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius, 0, 2 * Math.PI);
-        ctx.fillStyle = `rgba(${hexToRgb(star.color)}, ${star.alpha})`;
-        ctx.fill();
-    }
-}
-
-function hexToRgb(hex) {
-    const bigint = parseInt(hex.slice(1), 16);
-    const r = (bigint >> 16) & 255;
-    const g = (bigint >> 8) & 255;
-    const b = bigint & 255;
-    return `${r}, ${g}, ${b}`;
-}
-
-function createLines() {
-    for (let i = 0; i < stars.length; i++) {
-        for (let j = i + 1; j < stars.length; j++) {
-            let distance = Math.sqrt(Math.pow(stars[i].x - stars[j].x, 2) + Math.pow(stars[i].y - stars[j].y, 2));
-            if (distance < 150) {
-                lines.push({
-                    x1: stars[i].x,
-                    y1: stars[i].y,
-                    x2: stars[j].x,
-                    y2: stars[j].y,
-                    alpha: 1 - distance / 150
-                });
-            }
-        }
-    }
-}
-
-function drawLines() {
-    for (let line of lines) {
-        ctx.beginPath();
-        ctx.moveTo(line.x1, line.y1);
-        ctx.lineTo(line.x2, line.y2);
-        ctx.strokeStyle = `rgba(255, 255, 255, ${line.alpha})`;
-        ctx.stroke();
-    }
-}
-
-function createClusters() {
-    for (let i = 0; i < 5; i++) {
-        clusters.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            radius: 50 + Math.random() * 50,
-            color: getRandomColor(),
-            alpha: 0.1 + Math.random() * 0.4
-        });
-    }
-}
-
-function drawClusters() {
-    for (let cluster of clusters) {
-        ctx.beginPath();
-        let gradient = ctx.createRadialGradient(cluster.x, cluster.y, 0, cluster.x, cluster.y, cluster.radius);
-        gradient.addColorStop(0, `rgba(${hexToRgb(cluster.color)}, ${cluster.alpha})`);
-        gradient.addColorStop(1, `rgba(${hexToRgb(cluster.color)}, 0)`);
-        ctx.arc(cluster.x, cluster.y, cluster.radius, 0, 2 * Math.PI);
-        ctx.fillStyle = gradient;
-        ctx.fill();
+function spawnParticles(x, y) {
+    const particleCount = 20;
+    for (let i = 0; i < particleCount; i++) {
+        const radius = Math.random() * 3;
+        const color = getRandomColor();
+        const velocity = {
+            x: (Math.random() - 0.5) * 2,
+            y: (Math.random() - 0.5) * 2
+        };
+        particles.push(new Particle(x, y, radius, color, velocity));
     }
 }
 
 function animate() {
-    drawStars();
-    drawLines();
-    drawClusters();
     requestAnimationFrame(animate);
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach((particle, index) => {
+        if (particle.alpha > 0) {
+            particle.update();
+        } else {
+            particles.splice(index, 1);
+        }
+    });
+
+    spawnParticles(canvas.width / 2, canvas.height / 2);
 }
 
-createStars();
-createLines();
-createClusters();
 animate();
 
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    stars = [];
-    lines = [];
-    clusters = [];
-    createStars();
-    createLines();
-    createClusters();
 });
