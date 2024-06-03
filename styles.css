@@ -4,7 +4,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #000;
+    background-color: #000; /* Match the background color of the image */
     overflow: hidden;
     position: relative;
 }

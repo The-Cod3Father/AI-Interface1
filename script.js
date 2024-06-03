@@ -4,7 +4,7 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 let particles = [];
-const particleCount = 1000;
+const particleCount = 100;
 
 class Particle {
     constructor(x, y, radius, color, velocity) {
@@ -32,12 +32,26 @@ class Particle {
         this.x += this.velocity.x;
         this.y += this.velocity.y;
         if (this.alpha > 0) {
-            this.alpha -= 0.005;
+            this.alpha -= 0.02;
         } else {
             this.alpha = 1;
-            this.x = canvas.width / 2 + Math.random() * canvas.width / 2 * (Math.random() < 0.5 ? -1 : 1);
-            this.y = canvas.height / 2 + Math.random() * canvas.height / 2 * (Math.random() < 0.5 ? -1 : 1);
+            this.reset();
         }
+    }
+
+    reset() {
+        const brainX = canvas.width / 2;
+        const brainY = canvas.height / 2;
+        const radius = Math.min(canvas.width, canvas.height) / 4;
+
+        const angle = Math.random() * Math.PI * 2;
+        this.x = brainX + radius * Math.cos(angle);
+        this.y = brainY + radius * Math.sin(angle);
+
+        this.velocity = {
+            x: (Math.random() - 0.5) * 5,
+            y: (Math.random() - 0.5) * 5
+        };
     }
 }
 
@@ -51,11 +65,18 @@ function spawnParticles() {
         const radius = Math.random() * 2;
         const color = getRandomColor();
         const velocity = {
-            x: (Math.random() - 0.5) * 0.5,
-            y: (Math.random() - 0.5) * 0.5
+            x: (Math.random() - 0.5) * 5,
+            y: (Math.random() - 0.5) * 5
         };
-        const x = canvas.width / 2 + Math.random() * canvas.width / 2 * (Math.random() < 0.5 ? -1 : 1);
-        const y = canvas.height / 2 + Math.random() * canvas.height / 2 * (Math.random() < 0.5 ? -1 : 1);
+
+        const brainX = canvas.width / 2;
+        const brainY = canvas.height / 2;
+        const brainRadius = Math.min(canvas.width, canvas.height) / 4;
+
+        const angle = Math.random() * Math.PI * 2;
+        const x = brainX + brainRadius * Math.cos(angle);
+        const y = brainY + brainRadius * Math.sin(angle);
+
         particles.push(new Particle(x, y, radius, color, velocity));
     }
 }
@@ -64,7 +85,7 @@ function animate() {
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    particles.forEach((particle) => {
+    particles.forEach(particle => {
         particle.update();
     });
 }
