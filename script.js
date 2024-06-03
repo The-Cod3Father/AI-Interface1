@@ -70,13 +70,13 @@ function drawLines() {
 }
 
 function createClusters() {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 5; i++) {
         clusters.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            radius: 30 + Math.random() * 20,
+            radius: 50 + Math.random() * 50,
             color: getRandomColor(),
-            alpha: 0.5
+            alpha: 0.1 + Math.random() * 0.4
         });
     }
 }
@@ -84,8 +84,11 @@ function createClusters() {
 function drawClusters() {
     for (let cluster of clusters) {
         ctx.beginPath();
+        let gradient = ctx.createRadialGradient(cluster.x, cluster.y, 0, cluster.x, cluster.y, cluster.radius);
+        gradient.addColorStop(0, `rgba(${hexToRgb(cluster.color)}, ${cluster.alpha})`);
+        gradient.addColorStop(1, `rgba(${hexToRgb(cluster.color)}, 0)`);
         ctx.arc(cluster.x, cluster.y, cluster.radius, 0, 2 * Math.PI);
-        ctx.fillStyle = `rgba(${hexToRgb(cluster.color)}, ${cluster.alpha})`;
+        ctx.fillStyle = gradient;
         ctx.fill();
     }
 }
