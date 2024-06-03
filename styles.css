@@ -6,18 +6,32 @@ body {
     align-items: center;
     background-color: #000;
     overflow: hidden;
+    position: relative;
 }
 
-canvas {
-    display: block;
+.image-container {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-#networkCanvas {
-    background: url('https://github.com/The-Cod3Father/AI-Interface1/blob/68f9888234f20f3eff50d37a57691dec4c9418ba/CEE8ABA0-9CE0-44A0-A20A-028BB4CA3496.png') no-repeat center center;
-    background-size: contain;
+#backgroundImage {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
 }
