@@ -52,6 +52,20 @@ function spawnParticles(x, y) {
     }
 }
 
+function drawBrain() {
+    const brainWidth = canvas.width / 2;
+    const brainHeight = canvas.height / 2;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+
+    for (let angle = 0; angle < 360; angle += 1) {
+        const radian = (Math.PI / 180) * angle;
+        const x = centerX + brainWidth * Math.sin(radian) * Math.cos(radian);
+        const y = centerY + brainHeight * Math.cos(radian);
+        spawnParticles(x, y);
+    }
+}
+
 function animate() {
     requestAnimationFrame(animate);
     ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
@@ -65,7 +79,7 @@ function animate() {
         }
     });
 
-    spawnParticles(canvas.width / 2, canvas.height / 2);
+    drawBrain();
 }
 
 animate();
@@ -73,4 +87,6 @@ animate();
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    particles = [];
+    drawBrain();
 });
