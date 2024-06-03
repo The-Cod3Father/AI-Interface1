@@ -10,4 +10,14 @@ body {
 
 canvas {
     display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#networkCanvas {
+    background: url('https://azuremidstream-my.sharepoint.com/:i:/g/personal/jsizemore_clearforkmidstream_com/EXc5AYThHuZNo0fF5QzwvUwB6ImSz3QlAp-XMk_a48duXQ?e=giT6bg') no-repeat center center;
+    background-size: cover;
 }
