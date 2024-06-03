@@ -19,5 +19,5 @@ canvas {
 
 #networkCanvas {
     background: url('https://azuremidstream-my.sharepoint.com/:i:/g/personal/jsizemore_clearforkmidstream_com/EXc5AYThHuZNo0fF5QzwvUwB6ImSz3QlAp-XMk_a48duXQ?e=giT6bg') no-repeat center center;
-    background-size: cover;
+    background-size: contain;
 }
